@@ -20,6 +20,8 @@ class CreateGamesTable extends Migration
             $table->integer('weak_team');
             $table->integer('strong_team_score')->default(0);
             $table->integer('weak_team_score')->default(0);
+            $table->integer('final_strong_team_score')->default(0);
+            $table->integer('final_weak_team_score')->default(0);
             $table->float('deviant')->default(0);
             $table->float('over_under')->default(0);
             $table->boolean('game_done')->default(false);

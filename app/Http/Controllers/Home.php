@@ -35,8 +35,8 @@ class Home extends Controller
         // die;
         $players = Player::orderBy('score', 'desc')->get();
 
-        $available_games = Game::where("disabled", false)->where("game_done", false)->orderBy("start", "desc")->get();
-        $disabled_games = Game::where("disabled", true)->where("game_done", false)->orderBy("start", "desc")->get();
+        $available_games = Game::where("disabled", false)->where("game_done", false)->orderBy("start", "asc")->get();
+        $disabled_games = Game::where("disabled", true)->where("game_done", false)->orderBy("start", "asc")->get();
         $expired_games = Game::where("game_done", true)->orderBy("start", "desc")->get();
         $all_games = Game::orderBy("start", "desc")->get();
         $voting_list = Voting::where("vote_done", false)->orderBy("player_id", "desc")->get();

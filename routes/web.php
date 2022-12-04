@@ -24,15 +24,15 @@ Route::get('/init', [Home::class, 'init']);
 Route::match(['get', 'post'], '/', [Home::class, 'index']);
 Route::get('/game/{id}', [Home::class, 'game'])->whereNumber('id');
 
-Route::post('/vote', [GameManager::class, 'vote']);
-Route::post('/create-match', [GameManager::class, 'create_match']);
-Route::post('/remove-match', [GameManager::class, 'remove_match']);
+Route::match(['get', 'post'], '/vote', [GameManager::class, 'vote']);
+Route::match(['get', 'post'], '/create-match', [GameManager::class, 'create_match']);
+Route::match(['get', 'post'], '/remove-match', [GameManager::class, 'remove_match']);
 
-Route::post('/update-game', [GameManager::class, 'update']);
-Route::post('/disable-game', [GameManager::class, 'disable']);
-Route::post('/enable-game', [GameManager::class, 'enable']);
-Route::post('/remove-team', [TeamManager::class, 'remove_team']);
-Route::post('/vote-winner', [Home::class, 'vote_winner']);
+Route::match(['get', 'post'], '/update-game', [GameManager::class, 'update']);
+Route::match(['get', 'post'], '/disable-game', [GameManager::class, 'disable']);
+Route::match(['get', 'post'], '/enable-game', [GameManager::class, 'enable']);
+Route::match(['get', 'post'], '/remove-team', [TeamManager::class, 'remove_team']);
+Route::match(['get', 'post'], '/vote-winner', [Home::class, 'vote_winner']);
 
 Route::resources([
     'game' => Game::class,

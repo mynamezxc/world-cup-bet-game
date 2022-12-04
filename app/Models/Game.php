@@ -21,7 +21,9 @@ class Game extends Model
         'deviant',
         'over_under',
         'disabled',
-        'game_done'
+        'game_done',
+        'final_weak_team_score',
+        'final_strong_team_score'
     ];
 
     public function get_strong_team()

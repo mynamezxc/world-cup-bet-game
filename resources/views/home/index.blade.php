@@ -424,13 +424,22 @@
                                                                 </div>
                                                             </div>
                                                             <div class="single-input">
-                                                                <label for="strong_team_score">Cửa trên (bàn thắng)</label>
+                                                                <label for="strong_team_score">Cửa trên (bàn thắng 90")</label>
                                                                 <input type="number" required="required" name="strong_team_score" step="1" id="strong_team_score" placeholder="0">
                                                             </div>
                                                             <div class="single-input">
-                                                                <label for="weak_team_score">Cửa dưới (bàn thắng)</label>
+                                                                <label for="weak_team_score">Cửa dưới (bàn thắng 90")</label>
                                                                 <input type="number" required="required" name="weak_team_score" step="1" id="weak_team_score" placeholder="0">
                                                             </div>
+                                                            <div class="single-input">
+                                                                <label for="final_strong_team_score">Cửa trên (chung cuộc)</label>
+                                                                <input type="number" required="required" name="final_strong_team_score" step="1" id="final_strong_team_score" placeholder="0">
+                                                            </div>
+                                                            <div class="single-input">
+                                                                <label for="final_weak_team_score">Cửa dưới (chung cuộc")</label>
+                                                                <input type="number" required="required" name="final_weak_team_score" step="1" id="final_weak_team_score" placeholder="0">
+                                                            </div>
+                                                            
                                                             <span class="btn-border w-100">
                                                                 <button type="submit" class="cmn-btn w-100">Cập nhật</button>
                                                             </span>
@@ -880,7 +889,7 @@
                                                         <div class="single-area">
                                                             <div class="head-area d-flex align-items-center">
                                                                 <span class="mdr cmn-btn">Start time:</span>
-                                                                <p>{{ @date("h:i \\n\g\à\y d-m-Y", strtotime($game->start)) }}</p>
+                                                                <p>{{ @date("H:i \\n\g\à\y d-m-Y", strtotime($game->start)) }}</p>
                                                             </div>
                                                             <div class="main-content">
                                                                 <div class="team-single">
@@ -1130,13 +1139,11 @@
                                                                 </div>
                                                                 <div class="mid-area text-center">
                                                                     
-                                                                    <div class="countdown d-flex align-items-center justify-content-center">
-                                                                        <h4>
-                                                                            <span class="hours">{{ @$game->strong_team_score }}</span><span class="seperator">-</span>
+                                                                    <div class="countdown text-center align-items-center justify-content-center">
+                                                                        <h4 class="float-left">
+                                                                            <span class="hours">{{ @$game->strong_team_score }} - {{ @$game->weak_team_score }}
                                                                         </h4>
-                                                                        <h4>
-                                                                            <span class="minutes">{{ @$game->weak_team_score }}</span>
-                                                                        </h4>
+                                                                        <span>(FT {{ @$game->final_strong_team_score ? $game->final_strong_team_score : 0 }} - {{ @$game->final_weak_team_score ? $game->final_weak_team_score : 0 }})</span>
                                                                     </div>
                                                                     
                                                                 </div>
@@ -1208,7 +1215,11 @@
                                                                         Xỉu
                                                                     @endif
                                                                 </td>
-                                                                <td>{{ @$voting->use_lucky_star ? "Có" : "Không" }}</td>
+                                                                <td>
+                                                                    @if (@$voting->use_lucky_star)
+                                                                        <img src="/star.png" style="max-width:30px;" alt="">
+                                                                    @endif
+                                                                </td>
                                                             </tr>
                                                         @else
                                                             @if (@$player && @$current_player && @$player->id == @$current_player->id)
@@ -1286,7 +1297,7 @@
                                                             <tr>
                                                                 <td>{{@$counter}}</td>
                                                                 <td>{{ @$game->get_strong_team()->first()->name }} vs {{ @$game->get_weak_team()->first()->name }}</td>
-                                                                <td>{{ @date("h:i d-m-Y", strtotime($game->start)) }}</td>
+                                                                <td>{{ @date("H:i d-m-Y", strtotime($game->start)) }}</td>
                                                                 <td>{{ @$game->deviant }}</td>
                                                                 <td>{{ @$game->over_under }}</td>
                                                                 <td>
@@ -1610,8 +1621,8 @@
                 @foreach ($available_games as $game)
                     if (document.querySelector('.countdown-{{$game->id}}') !== null) {
                         $('.countdown-{{$game->id}}').downCount({
-                            date: '{{ date("m/d/Y h:i:s", strtotime($game->start) ) }}', //'12/31/2022 11:59:59' GMT +7
-                            offset: -4
+                            date: '{{ date("m/d/Y H:i:s", strtotime($game->start) ) }}', //'12/31/2022 11:59:59' GMT +7
+                            offset: +7
                         });
                     }
                 @endforeach
@@ -1625,6 +1636,7 @@
                 // }
                 document.getElementsByClassName("dateSelect").flatpickr({
                     dateFormat: "d-m-Y H:i:S",
+                    time_24hr: true
                 });
                 /* Wow js */
                 new WOW().init();
