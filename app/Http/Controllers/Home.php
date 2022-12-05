@@ -49,8 +49,13 @@ class Home extends Controller
         $win_rate = 0;
         $current_ranking = 0;
         if ($current_player && count($all_games) >= 1) {
+
+            $played_game = array_filter($all_games->toArray(), function ($game) {
+                return (@$game["game_done"] == true);
+            });
+
             $win = $current_player->win_count();
-            $win_rate = 100 / count($all_games) * $win;
+            $win_rate = 100 / count($played_game) * $win;
             foreach ($players as $counter => $player) {
                 if ($player->id == $current_player->id) {
                     $current_ranking = $counter+1;

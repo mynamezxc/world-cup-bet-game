@@ -1012,7 +1012,7 @@
                                                                                                         <div class="single-area" style="min-height:unset;">
                                                                                                             <input type="checkbox" name="use_lucky_star" {{ @$voted_this_game && $voted_this_game->use_lucky_star ? "checked" : "" }}>
                                                                                                             <label class="switch">Ngôi sao may mắn</label>
-                                                                                                            <span>(Còn lại {{$used_lucky_star_for_this_game ? 1 : @$current_player->lucky_stars}})</span>
+                                                                                                            <span>(Còn lại {{$used_lucky_star_for_this_game ? @$current_player->lucky_stars + 1 : @$current_player->lucky_stars}})</span>
                                                                                                         </div>
                                                                                                     @endif
                                                                                                     
@@ -1198,7 +1198,7 @@
                                                         @endphp
                                                         
                                                         @if ($game && $game->disabled == true)
-                                                            <tr>
+                                                            <tr style="{{ @$current_player && $player->id == $current_player->id ? "background:#0e86bb;" : "" }}">
                                                                 <td>{{ @$player->name }}</td>
                                                                 <td>{{ @$game->get_strong_team()->first()->name }}</td>
                                                                 <td>{{ @$game->get_weak_team()->first()->name }}</td>
@@ -1223,7 +1223,7 @@
                                                             </tr>
                                                         @else
                                                             @if (@$player && @$current_player && @$player->id == @$current_player->id)
-                                                            <tr>
+                                                            <tr style="background:#0e86bb;">
                                                                 <td>{{ @$player->name }}</td>
                                                                 <td>{{ @$game->get_strong_team()->first()->name }}</td>
                                                                 <td>{{ @$game->get_weak_team()->first()->name }}</td>
@@ -1240,7 +1240,11 @@
                                                                         Xỉu
                                                                     @endif
                                                                 </td>
-                                                                <td>{{ @$voting->use_lucky_star ? "Có" : "Không" }}</td>
+                                                                <td>
+                                                                    @if (@$voting->use_lucky_star)
+                                                                        <img src="/star.png" style="max-width:30px;" alt="">
+                                                                    @endif
+                                                                </td>
                                                             </tr>
                                                             @endif
                                                         @endif
@@ -1288,7 +1292,7 @@
                                                     @endphp
                                                     @if ($current_player)
                                                         
-                                                        @foreach(@$current_player->histories()->orderBy("created_at", "desc")->take(5)->get() as $history)
+                                                        @foreach(@$current_player->histories()->orderBy("created_at", "desc")->get() as $history)
                                                             @php
                                                                 $game = @$history->game()->first();
                                                                 $vote = @$history->vote()->first();
@@ -1311,7 +1315,11 @@
                                                                         Xỉu
                                                                     @endif
                                                                 </td>
-                                                                <td>{{ @$vote->use_lucky_star ? "Có" : "Không" }}</td>
+                                                                <td>
+                                                                    @if (@$vote->use_lucky_star)
+                                                                        <img src="/star.png" style="max-width:30px;" alt="">
+                                                                    @endif
+                                                                </td>
                                                                 <td>{{ @$history->add_score }}</td>
                                                                 <td>{{ @$game->strong_team_score }} - {{ @$game->weak_team_score }}</td>
                                                             </tr>
@@ -1404,9 +1412,9 @@
                                                                 $team_2nd = $player->get_team_2nd();
                                                                 $counter++;
                                                             @endphp
-                                                            @if ($team_1st && $team_2nd && $team_1st->is_out && $team_2nd->is_out)
+                                                            @if ($team_1st && $team_2nd && $team_1st->is_out)
                                                                 <tr style="background:#877ac5;">
-                                                            @elseif ($team_1st && $team_2nd && ( ($team_1st->is_out && !$team_2nd->is_out) || (!$team_1st->is_out && $team_2nd->is_out) ))
+                                                            @elseif ($team_1st && $team_2nd && (!$team_1st->is_out && $team_2nd->is_out) ))
                                                                 <tr style="background:#432f9f;">
                                                             @else
                                                                 <tr style="background:#322a71;">
