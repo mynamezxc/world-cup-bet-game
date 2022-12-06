@@ -34,6 +34,7 @@ class Home extends Controller
         // var_dump($current_player);
         // die;
         $players = Player::orderBy('score', 'desc')->get();
+        $players_order_by_name = Player::orderBy('name', 'asc')->get();
 
         $available_games = Game::where("disabled", false)->where("game_done", false)->orderBy("start", "asc")->get();
         $disabled_games = Game::where("disabled", true)->where("game_done", false)->orderBy("start", "asc")->get();
@@ -64,7 +65,8 @@ class Home extends Controller
         }
 
         return view('home.index', [
-            "players" => $players, 
+            "players" => $players,
+            "players_order_by_name" => $players_order_by_name,
             "available_games" => $available_games, 
             "disabled_games" => $disabled_games, 
             "expired_games" => $expired_games,

@@ -790,6 +790,7 @@
                                                         <th scope="col">Loss</th>
                                                         <th scope="col">Draw</th>
                                                         <th scope="col">No vote</th>
+                                                        <th scope="col">Lucky star(s)</th>
                                                         <th scope="col">Last 5 games</th>
                                                     </tr>
                                                 </thead>
@@ -810,6 +811,10 @@
                                                                 <td>{{ @$player->loss_count() }}</td>
                                                                 <td>{{ @$player->draw_count() }}</td>
                                                                 <td>{{ @$player->no_vote_count() }}</td>
+                                                                <td>@for ($star = 0; $star < @$player->lucky_stars; $star++)
+                                                                    <img src="/star.png" style="max-width:15px;" alt="">
+                                                                @endfor
+                                                                </td>
                                                                 <td>
                                                                     @foreach (@$player->histories()->orderBy("created_at", "desc")->take(5)->get() as $history)
                                                                         @php
@@ -818,16 +823,21 @@
                                                                             $weak_team = $game->get_weak_team()->first();
                                                                         @endphp
 
+                                                                        @if ($history->use_lucky_star)
+                                                                            <img src="/star.png" style="max-width:15px;" alt="">
+                                                                        @endif
+
                                                                         @if ($history->status == "win")
-                                                                            <span style="color:#2bff2b">{{ @$strong_team->name." - ".@$weak_team->name }}: {{ @$history->status }}</span><br>
+                                                                            <span style="color:#2bff2b">{{ @$strong_team->name." - ".@$weak_team->name }}: {{ @$history->status }}</span>
                                                                         @endif
                                                                         @if ($history->status == "draw")
-                                                                            <span style="color:#ffffff">{{ @$strong_team->name." - ".@$weak_team->name }}: {{ @$history->status }}</span><br>
+                                                                            <span style="color:#ffffff">{{ @$strong_team->name." - ".@$weak_team->name }}: {{ @$history->status }}</span>
                                                                         @endif
                                                                         @if ($history->status == "loss" || $history->status == "no_vote")
-                                                                            <span style="color:red">{{ @$strong_team->name." - ".@$weak_team->name }}: {{ @$history->status }}</span><br>
+                                                                            <span style="color:red">{{ @$strong_team->name." - ".@$weak_team->name }}: {{ @$history->status }}</span>
                                                                         @endif
                                                                         
+                                                                        <br>
                                                                     @endforeach
                                                                 </td>
                                                             </tr>
@@ -1404,9 +1414,9 @@
                                                     @php
                                                         $counter = 0;
                                                     @endphp
-                                                    @if ($players)
+                                                    @if ($players_order_by_name)
                                                         
-                                                        @foreach(@$players as $player)
+                                                        @foreach(@$players_order_by_name as $player)
                                                             @php
                                                                 $team_1st = $player->get_team_1st();
                                                                 $team_2nd = $player->get_team_2nd();
