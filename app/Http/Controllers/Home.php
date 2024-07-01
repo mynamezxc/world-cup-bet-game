@@ -36,11 +36,11 @@ class Home extends Controller
         $players = Player::orderBy('score', 'desc')->get();
         $players_order_by_name = Player::orderBy('name', 'asc')->get();
 
-        $available_games = Game::where("disabled", false)->where("game_done", false)->orderBy("start", "asc")->get();
+        $available_games = Game::where("game_done", false)->orderBy("start", "asc")->get();
         $disabled_games = Game::where("disabled", true)->where("game_done", false)->orderBy("start", "asc")->get();
         $expired_games = Game::where("game_done", true)->orderBy("start", "desc")->get();
         $all_games = Game::orderBy("start", "desc")->get();
-        $voting_list = Voting::where("vote_done", false)->orderBy("player_id", "desc")->get();
+        $voting_list = Voting::where("vote_done", false)->orderBy("game_id", "asc")->orderBy("player_id", "desc")->get();
 
         $teams_available = Team::where("is_out", false)->get();
         $teams = Team::orderBy("is_out", "asc")->get();
@@ -56,7 +56,7 @@ class Home extends Controller
             });
 
             $win = $current_player->win_count();
-            $win_rate = 100 / count($played_game) * $win;
+            $win_rate = 100 / (count($played_game) > 0 ? count($played_game) : 1) * $win;
             foreach ($players as $counter => $player) {
                 if ($player->id == $current_player->id) {
                     $current_ranking = $counter+1;
@@ -89,7 +89,7 @@ class Home extends Controller
         }
         $team_1st = $request->post("team_1st", false);
         $team_2nd = $request->post("team_2nd", false);
-        if ($current_player && time() < strtotime("03-12-2022 21:30:00")) {
+        if ($current_player && time() < strtotime("29-06-2024 22:30:00")) {
             if ($team_1st && is_numeric($team_1st)) {
                 $current_player->team_1st = $team_1st;
             }

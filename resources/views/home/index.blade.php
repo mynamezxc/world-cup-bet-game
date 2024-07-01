@@ -114,7 +114,7 @@
                 <div class="row d-flex header-area">
                     <nav class="navbar navbar-expand-lg navbar-light">
                         <a class="navbar-brand" href="/">
-                            <img src="//seeklogo.com/images/F/fifa-world-cup-qatar-2022-logo-32157477CB-seeklogo.com.png" style="width:150px;" class="logo" alt="logo">
+                            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/2/26/UEFA_Euro_2024_Logo.svg/1200px-UEFA_Euro_2024_Logo.svg.png" style="width:95px;" class="logo" alt="logo">
                         </a>
                         <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse"
                             data-bs-target="#navbar-content">
@@ -284,7 +284,7 @@
                     <div class="row">
                         <div class="col-lg-6 col-md-10">
                             <div class="main-content">
-                                <h1>Qatar 2022 </h1>
+                                <h1>UEFA Euro 2024</h1>
                                 <div class="breadcrumb-area">
                                     <nav aria-label="breadcrumb">
                                         <ol class="breadcrumb d-flex align-items-center">
@@ -415,10 +415,10 @@
                                                                     <label>Chọn trận đấu</label>
                                                                     <select required="required" name="game_id">
                                                                         @foreach($available_games as $game)
-                                                                        <option value="{{ @$game->id }}">{{ $game->get_strong_team()->first()->name }} - {{$game->get_weak_team()->first()->name}}</option>
+                                                                        <option value="{{ @$game->id }}">{{ @$game->get_strong_team()->first()->name }} - {{$game->get_weak_team()->first()->name}}</option>
                                                                         @endforeach
                                                                         @foreach($disabled_games as $game)
-                                                                        <option value="{{ @$game->id }}">{{ $game->get_strong_team()->first()->name }} - {{$game->get_weak_team()->first()->name}}</option>
+                                                                        {{-- <option value="{{ @$game->id }}">{{ @$game->get_strong_team()->first()->name }} - {{$game->get_weak_team()->first()->name}}</option> --}}
                                                                         @endforeach
                                                                     </select>
                                                                 </div>
@@ -481,7 +481,7 @@
                                                                     <label>Chọn trận đấu</label>
                                                                     <select required="required" name="game_id">
                                                                         @foreach($available_games as $game)
-                                                                        <option value="{{ @$game->id }}">{{ $game->get_strong_team()->first()->name }} - {{$game->get_weak_team()->first()->name}}</option>
+                                                                        <option value="{{ @$game->id }}">{{ @$game->get_strong_team()->first()->name }} - {{ @$game->get_weak_team()->first()->name}}</option>
                                                                         @endforeach
                                                                     </select>
                                                                 </div>
@@ -527,7 +527,7 @@
                                                                     <label>Chọn trận đấu</label>
                                                                     <select required="required" name="game_id">
                                                                         @foreach($disabled_games as $game)
-                                                                        <option value="{{ @$game->id }}">{{ $game->get_strong_team()->first()->name }} - {{$game->get_weak_team()->first()->name}}</option>
+                                                                        <option value="{{ @$game->id }}">{{ @$game->get_strong_team()->first()->name }} - {{ @$game->get_weak_team()->first()->name}}</option>
                                                                         @endforeach
                                                                     </select>
                                                                 </div>
@@ -576,7 +576,7 @@
                                                                     <label>Chọn trận đấu để xóa</label>
                                                                     <select required="required" name="game_id">
                                                                         @foreach($available_games as $game)
-                                                                        <option value="{{ $game->id }}">{{ $game->get_strong_team()->first()->name }} - {{$game->get_weak_team()->first()->name}}</option>
+                                                                        <option value="{{ $game->id }}">{{ @$game->get_strong_team()->first()->name }} - {{ @$game->get_weak_team()->first()->name}}</option>
                                                                         @endforeach
                                                                     </select>
                                                                 </div>
@@ -819,7 +819,7 @@
                                                                     @foreach (@$player->histories()->orderBy("created_at", "desc")->take(5)->get() as $history)
                                                                         @php
                                                                             $game = $history->game()->first();
-                                                                            $strong_team = $game->get_strong_team()->first();
+                                                                            $strong_team = @$game->get_strong_team()->first();
                                                                             $weak_team = $game->get_weak_team()->first();
                                                                         @endphp
 
@@ -893,166 +893,169 @@
                                                 aria-labelledby="open-playing-tab">
                                                 @if ($available_games)
                                                     @foreach ($available_games as $game)
-                                                    <form action="/vote" method="post">
-                                                        @csrf
-                                                        <input type="hidden" name="game_id" value="{{ @$game->id }}">
-                                                        <div class="single-area">
-                                                            <div class="head-area d-flex align-items-center">
-                                                                <span class="mdr cmn-btn">Start time:</span>
-                                                                <p>{{ @date("H:i \\n\g\à\y d-m-Y", strtotime($game->start)) }}</p>
-                                                            </div>
-                                                            <div class="main-content">
-                                                                <div class="team-single">
-                                                                    <h4>{{ @$game->get_strong_team()->first()->name }}</h4>
-                                                                    <span class="mdr">Location: Qatar</span>
-                                                                    <div class="img-area">
-                                                                        <img src="{{ @$game->get_strong_team()->first()->logo }}" class="team-logo" alt="image">
+                                                        @if (!$game->disabled)
+                                                            <form action="/vote" method="post">
+                                                                @csrf
+                                                                <input type="hidden" name="game_id" value="{{ @$game->id }}">
+                                                                <div class="single-area">
+                                                                    <div class="head-area d-flex align-items-center">
+                                                                        <span class="mdr cmn-btn">Start time:</span>
+                                                                        <p>{{ @date("H:i \\n\g\à\y d-m-Y", strtotime($game->start)) }}</p>
                                                                     </div>
-                                                                </div>
-                                                                <div class="mid-area text-center">
-                                                                    
-                                                                    <div class="countdown countdown-{{@$game->id}} d-flex align-items-center justify-content-center">
-                                                                        <h4>
-                                                                            <span class="hours">00</span><span
-                                                                                class="ref">h</span><span class="seperator">:</span>
-                                                                        </h4>
-                                                                        <h4>
-                                                                            <span class="minutes">00</span><span
-                                                                                class="ref">m</span><span class="seperator">:</span>
-                                                                        </h4>
-                                                                        <h4>
-                                                                            <span class="seconds">00</span><span
-                                                                                class="ref">s</span>
-                                                                        </h4>
-                                                                    </div>
-                                                                    
-                                                                </div>
-                                                                <div class="team-single">
-                                                                    <h4>{{ @$game->get_weak_team()->first()->name }}</h4>
-                                                                    <span class="mdr">Location: Qatar</span>
-                                                                    <div class="img-area">
-                                                                        <img src="{{ @$game->get_weak_team()->first()->logo }}" class="team-logo" alt="image">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="bottom-item">
-                                                                @if ($current_player)
-                                                                    <button type="button" class="cmn-btn firstTeam"
-                                                                    data-bs-toggle="modal" data-bs-target="#vote-{{ @$game->id }}">Vote</button>
-
-
-                                                                    @foreach ($current_player->votings()->where("vote_done", false)->get() as $vote)
-
-                                                                        @php
-                                                                            $voting_game = $vote->game()->first();
-                                                                        @endphp
-                                                                        @if ($voting_game && $voting_game->id == @$game->id)
+                                                                    <div class="main-content">
+                                                                        <div class="team-single">
+                                                                            <h4>{{ @$game->get_strong_team()->first()->name }}</h4>
+                                                                            <span class="mdr">Location: Germany</span>
+                                                                            <div class="img-area">
+                                                                                <img src="{{ @$game->get_strong_team()->first()->logo }}" class="team-logo" alt="image">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="mid-area text-center">
                                                                             
-                                                                            <button type="button" class="cmn-btn draw">Bạn đã chọn:
-                                                                                @if ($vote->vote_value == "strong")
-                                                                                    Cửa trên (Chấp {{$game->deviant}})
-                                                                                @elseif ($vote->vote_value == "weak")
-                                                                                    Cửa dưới (Trên chấp {{$game->deviant}})
-                                                                                @elseif ($vote->vote_value == "over")
-                                                                                    Tài ({{$game->over_under}})
-                                                                                @elseif ($vote->vote_value == "under")
-                                                                                    Xỉu ({{$game->over_under}})
-                                                                                @endif
-                                                                                @if (@$vote->use_lucky_star)
-                                                                                    <img src="/star.png" style="max-width:15px;" alt="">                                 
-                                                                                @endif
-                                                                                
-                                                                            </button>
+                                                                            <div class="countdown countdown-{{@$game->id}} d-flex align-items-center justify-content-center">
+                                                                                <h4>
+                                                                                    <span class="hours">00</span><span
+                                                                                        class="ref">h</span><span class="seperator">:</span>
+                                                                                </h4>
+                                                                                <h4>
+                                                                                    <span class="minutes">00</span><span
+                                                                                        class="ref">m</span><span class="seperator">:</span>
+                                                                                </h4>
+                                                                                <h4>
+                                                                                    <span class="seconds">00</span><span
+                                                                                        class="ref">s</span>
+                                                                                </h4>
+                                                                            </div>
                                                                             
+                                                                        </div>
+                                                                        <div class="team-single">
+                                                                            <h4>{{ @$game->get_weak_team()->first()->name }}</h4>
+                                                                            <span class="mdr">Location: Germany</span>
+                                                                            <div class="img-area">
+                                                                                <img src="{{ @$game->get_weak_team()->first()->logo }}" class="team-logo" alt="image">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="bottom-item">
+                                                                        @if ($current_player)
+                                                                            <button type="button" class="cmn-btn firstTeam"
+                                                                            data-bs-toggle="modal" data-bs-target="#vote-{{ @$game->id }}">Vote</button>
+
+
+                                                                            @foreach ($current_player->votings()->where("vote_done", false)->get() as $vote)
+
+                                                                                @php
+                                                                                    $voting_game = $vote->game()->first();
+                                                                                @endphp
+                                                                                @if ($voting_game && $voting_game->id == @$game->id)
+                                                                                    
+                                                                                    <button type="button" class="cmn-btn draw">Bạn đã chọn:
+                                                                                        @if ($vote->vote_value == "strong")
+                                                                                            Cửa trên (Chấp {{$game->deviant}})
+                                                                                        @elseif ($vote->vote_value == "weak")
+                                                                                            Cửa dưới (Trên chấp {{$game->deviant}})
+                                                                                        @elseif ($vote->vote_value == "over")
+                                                                                            Tài ({{$game->over_under}})
+                                                                                        @elseif ($vote->vote_value == "under")
+                                                                                            Xỉu ({{$game->over_under}})
+                                                                                        @endif
+                                                                                        @if (@$vote->use_lucky_star)
+                                                                                            <img src="/star.png" style="max-width:15px;" alt="">                                 
+                                                                                        @endif
+                                                                                        
+                                                                                    </button>
+                                                                                    
+                                                                                @endif
+
+                                                                            @endforeach
+
+                                                                            {{-- @if ($current_player->is_manager)
+                                                                                <form action="/remove-match" method="POST">
+                                                                                    @csrf
+                                                                                    <input type="hidden" name="game_id" value="{{@$game->id}}">
+                                                                                    <button type="submit" onclick="clicked(event)" class="cmn-btn draw">Remove this game</button>
+                                                                                </form>
+                                                                            @endif --}}
                                                                         @endif
-
-                                                                    @endforeach
-
-                                                                    {{-- @if ($current_player->is_manager)
-                                                                        <form action="/remove-match" method="POST">
-                                                                            @csrf
-                                                                            <input type="hidden" name="game_id" value="{{@$game->id}}">
-                                                                            <button type="submit" onclick="clicked(event)" class="cmn-btn draw">Remove this game</button>
-                                                                        </form>
-                                                                    @endif --}}
-                                                                @endif
-                                                            </div>
-                                                        </div>
+                                                                    </div>
+                                                                </div>
 
 
-                                                        <!-- Betpop Up Modal start -->
-                                                        <div class="betpopmodal">
-                                                            <div class="modal fade" id="vote-{{ @$game->id }}" tabindex="-1" aria-hidden="true">
-                                                                <div class="modal-dialog modal-dialog-centered">
-                                                                    <div class="container">
-                                                                        <div class="row justify-content-center">
-                                                                            <div class="col-xxl-8 col-xl-9 col-lg-11">
-                                                                                <div class="modal-content">
-                                                                                    <div class="modal-header">
-                                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                                            aria-label="Close"></button>
-                                                                                    </div>
-                                                                                    <div class="modal-body">
-                                                                                        <div class="top-item">
-                                                                                            <a href="javascript:void(0)" class="cmn-btn firstTeam">{{ @$game->get_strong_team()->first()->name }} V/S {{ @$game->get_weak_team()->first()->name }}</a>
-                                                                                        </div>
-
-                                                                                        <div class="col-md-12 text-center">
-                                                                                            <div class="row">
-                                                                                                <div class="col-md-4">
-                                                                                                    <img src="{{ @$game->get_strong_team()->first()->logo }}" class="team-logo" alt="image">
-                                                                                                    <div class="text-area">
-                                                                                                        <p class="mdr">{{ @$game->get_strong_team()->first()->name }}</p>
-                                                                                                    </div>
+                                                                <!-- Betpop Up Modal start -->
+                                                                <div class="betpopmodal">
+                                                                    <div class="modal fade" id="vote-{{ @$game->id }}" tabindex="-1" aria-hidden="true">
+                                                                        <div class="modal-dialog modal-dialog-centered">
+                                                                            <div class="container">
+                                                                                <div class="row justify-content-center">
+                                                                                    <div class="col-xxl-8 col-xl-9 col-lg-11">
+                                                                                        <div class="modal-content">
+                                                                                            <div class="modal-header">
+                                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                                                    aria-label="Close"></button>
+                                                                                            </div>
+                                                                                            <div class="modal-body">
+                                                                                                <div class="top-item">
+                                                                                                    <a href="javascript:void(0)" class="cmn-btn firstTeam">{{ @$game->get_strong_team()->first()->name }} V/S {{ @$game->get_weak_team()->first()->name }}</a>
                                                                                                 </div>
-                                                                                                <div class="col-md-4">
-                                                                                                    <h6>{{ @$game->get_strong_team()->first()->name }} chấp {{ @$game->deviant }} trái</h6><br>
-                                                                                                    <h6>Tài/Xỉu: {{ @$game->over_under }}</h6><br>
-                                                                                                    @php
-                                                                                                        $used_lucky_star_for_this_game = false;
-                                                                                                        $voted_this_game = false;
-                                                                                                        if (@$current_player && @$game) {
-                                                                                                            $voted_this_game = $current_player->votings()->where("game_id", $game->id)->first();
-                                                                                                            if ($voted_this_game && $voted_this_game->use_lucky_star) {
-                                                                                                                $used_lucky_star_for_this_game = true;
-                                                                                                            }
-                                                                                                        }
-                                                                                                    @endphp
-                                                                                                    @if (@$current_player->lucky_stars > 0 || $used_lucky_star_for_this_game)
-                                                                                                        <div class="single-area" style="min-height:unset;">
-                                                                                                            <input type="checkbox" name="use_lucky_star" {{ @$voted_this_game && $voted_this_game->use_lucky_star ? "checked" : "" }}>
-                                                                                                            <label class="switch">Ngôi sao may mắn</label>
-                                                                                                            <span>(Còn lại {{$used_lucky_star_for_this_game ? @$current_player->lucky_stars + 1 : @$current_player->lucky_stars}})</span>
+
+                                                                                                <div class="col-md-12 text-center">
+                                                                                                    <div class="row">
+                                                                                                        <div class="col-md-4">
+                                                                                                            <img src="{{ @$game->get_strong_team()->first()->logo }}" class="team-logo" alt="image">
+                                                                                                            <div class="text-area">
+                                                                                                                <p class="mdr">{{ @$game->get_strong_team()->first()->name }}</p>
+                                                                                                            </div>
                                                                                                         </div>
-                                                                                                    @endif
+                                                                                                        <div class="col-md-4">
+                                                                                                            <h6>{{ @$game->get_strong_team()->first()->name }} chấp {{ @$game->deviant }} trái</h6><br>
+                                                                                                            <h6>Tài/Xỉu: {{ @$game->over_under }}</h6><br>
+                                                                                                            @php
+                                                                                                                $used_lucky_star_for_this_game = false;
+                                                                                                                $voted_this_game = false;
+                                                                                                                if (@$current_player && @$game) {
+                                                                                                                    $voted_this_game = $current_player->votings()->where("game_id", $game->id)->first();
+                                                                                                                    if ($voted_this_game && $voted_this_game->use_lucky_star) {
+                                                                                                                        $used_lucky_star_for_this_game = true;
+                                                                                                                    }
+                                                                                                                }
+                                                                                                            @endphp
+                                                                                                            @if (@$current_player->lucky_stars > 0 || $used_lucky_star_for_this_game)
+                                                                                                                <div class="single-area" style="min-height:unset;">
+                                                                                                                    <input type="checkbox" name="use_lucky_star" {{ @$voted_this_game && $voted_this_game->use_lucky_star ? "checked" : "" }}>
+                                                                                                                    <label class="switch">Ngôi sao may mắn</label>
+                                                                                                                    <span>(Còn lại {{$used_lucky_star_for_this_game ? @$current_player->lucky_stars + 1 : @$current_player->lucky_stars}})</span>
+                                                                                                                </div>
+                                                                                                            @endif
+                                                                                                            
+                                                                                                        </div>
+                                                                                                        <div class="col-md-4">
+                                                                                                            <img src="{{ @$game->get_weak_team()->first()->logo }}" class="team-logo" alt="image">
+                                                                                                            <div class="text-area">
+                                                                                                                <p class="mdr">{{ @$game->get_weak_team()->first()->name }}</p>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
                                                                                                     
-                                                                                                </div>
-                                                                                                <div class="col-md-4">
-                                                                                                    <img src="{{ @$game->get_weak_team()->first()->logo }}" class="team-logo" alt="image">
-                                                                                                    <div class="text-area">
-                                                                                                        <p class="mdr">{{ @$game->get_weak_team()->first()->name }}</p>
+                                                                                                    
+                                                                                                    <div class="single-input">
+                                                                                                        <label>Bình chọn</label>
+                                                                                                        <select class="text-center" required="required" name="vote">
+                                                                                                            <option {{ $voted_this_game && $voted_this_game->vote_value == "strong" ? "selected" : ""}} value="strong">Cửa trên</option>
+                                                                                                            <option {{ $voted_this_game && $voted_this_game->vote_value == "weak" ? "selected" : ""}} value="weak">Cửa dưới</option>
+                                                                                                            <option {{ $voted_this_game && $voted_this_game->vote_value == "over" ? "selected" : ""}} value="over">Tài</option>
+                                                                                                            <option {{ $voted_this_game && $voted_this_game->vote_value == "under" ? "selected" : ""}} value="under">Xỉu</option>
+                                                                                                        </select>
                                                                                                     </div>
                                                                                                 </div>
+                                                                                                
+                                                                                                
                                                                                             </div>
-                                                                                            
-                                                                                            
-                                                                                            <div class="single-input">
-                                                                                                <label>Bình chọn</label>
-                                                                                                <select class="text-center" required="required" name="vote">
-                                                                                                    <option {{ $voted_this_game && $voted_this_game->vote_value == "strong" ? "selected" : ""}} value="strong">Cửa trên</option>
-                                                                                                    <option {{ $voted_this_game && $voted_this_game->vote_value == "weak" ? "selected" : ""}} value="weak">Cửa dưới</option>
-                                                                                                    <option {{ $voted_this_game && $voted_this_game->vote_value == "over" ? "selected" : ""}} value="over">Tài</option>
-                                                                                                    <option {{ $voted_this_game && $voted_this_game->vote_value == "under" ? "selected" : ""}} value="under">Xỉu</option>
-                                                                                                </select>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        
-                                                                                        
-                                                                                    </div>
-                                                                                    <div class="modal-footer">
-                                                                                        <div class="bottom-area">
-                                                                                            <div class="btn-area">
-                                                                                                <button type="submit" class="cmn-btn w-100">Bình chọn</button>
+                                                                                            <div class="modal-footer">
+                                                                                                <div class="bottom-area">
+                                                                                                    <div class="btn-area">
+                                                                                                        <button type="submit" class="cmn-btn w-100">Bình chọn</button>
+                                                                                                    </div>
+                                                                                                </div>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -1061,12 +1064,11 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                        <!-- Betpop Up Modal end -->
+                                                                <!-- Betpop Up Modal end -->
 
 
-                                                    </form>
+                                                            </form>
+                                                        @endif
                                                     @endforeach
                                                 @endif
                                             </div>
@@ -1087,7 +1089,7 @@
                                                             <div class="main-content">
                                                                 <div class="team-single">
                                                                     <h4>{{ @$game->get_strong_team()->first()->name }}</h4>
-                                                                    <span class="mdr">Location: Qatar</span>
+                                                                    <span class="mdr">Location: Germany</span>
                                                                     <div class="img-area">
                                                                         <img src="{{ @$game->get_strong_team()->first()->logo }}" class="team-logo" alt="image">
                                                                     </div>
@@ -1112,7 +1114,7 @@
                                                                 </div>
                                                                 <div class="team-single">
                                                                     <h4>{{ @$game->get_weak_team()->first()->name }}</h4>
-                                                                    <span class="mdr">Location: Qatar</span>
+                                                                    <span class="mdr">Location: Germany</span>
                                                                     <div class="img-area">
                                                                         <img src="{{ @$game->get_weak_team()->first()->logo }}" class="team-logo" alt="image">
                                                                     </div>
@@ -1142,7 +1144,7 @@
                                                             <div class="main-content">
                                                                 <div class="team-single">
                                                                     <h4>{{ @$game->get_strong_team()->first()->name }}</h4>
-                                                                    <span class="mdr">Location: Qatar</span>
+                                                                    <span class="mdr">Location: Germany</span>
                                                                     <div class="img-area">
                                                                         <img src="{{ @$game->get_strong_team()->first()->logo }}" class="team-logo" alt="image">
                                                                     </div>
@@ -1159,7 +1161,7 @@
                                                                 </div>
                                                                 <div class="team-single">
                                                                     <h4>{{ @$game->get_weak_team()->first()->name }}</h4>
-                                                                    <span class="mdr">Location: Qatar</span>
+                                                                    <span class="mdr">Location: Germany</span>
                                                                     <div class="img-area">
                                                                         <img src="{{ @$game->get_weak_team()->first()->logo }}" class="team-logo" alt="image">
                                                                     </div>
@@ -1187,6 +1189,7 @@
                                             <table class="table">
                                                 <thead>
                                                     <tr>
+                                                        <th scope="col">STT</th>
                                                         <th scope="col">Người bình chọn</th>
                                                         <th scope="col">Cửa trên</th>
                                                         <th scope="col">Cửa dưới</th>
@@ -1200,7 +1203,7 @@
                                                     @php
                                                         $counter = 0;
                                                     @endphp
-                                                    @foreach(@$voting_list as $voting)
+                                                    @foreach(@$voting_list as $key => $voting)
                                                         @php
                                                             $game = @$voting->game()->first();
                                                             $player = @$voting->player()->first();
@@ -1209,6 +1212,7 @@
                                                         
                                                         @if ($game && $game->disabled == true)
                                                             <tr style="{{ @$current_player && $player->id == $current_player->id ? "background:#0e86bb;" : "" }}">
+                                                                <td><b>#{{ @$key+1 }}</b></td>
                                                                 <td>{{ @$player->name }}</td>
                                                                 <td>{{ @$game->get_strong_team()->first()->name }}</td>
                                                                 <td>{{ @$game->get_weak_team()->first()->name }}</td>
@@ -1233,29 +1237,47 @@
                                                             </tr>
                                                         @else
                                                             @if (@$player && @$current_player && @$player->id == @$current_player->id)
-                                                            <tr style="background:#0e86bb;">
-                                                                <td>{{ @$player->name }}</td>
-                                                                <td>{{ @$game->get_strong_team()->first()->name }}</td>
-                                                                <td>{{ @$game->get_weak_team()->first()->name }}</td>
-                                                                <td>{{ @$game->deviant }}</td>
-                                                                <td>{{ @$game->over_under }}</td>
-                                                                <td>
-                                                                    @if (@$voting->vote_value == "strong")
-                                                                        Cửa trên
-                                                                    @elseif (@$voting->vote_value == "weak")
-                                                                        Cửa dưới
-                                                                    @elseif (@$voting->vote_value == "over")
-                                                                        Tài
-                                                                    @elseif (@$voting->vote_value == "under")
-                                                                        Xỉu
-                                                                    @endif
-                                                                </td>
-                                                                <td>
-                                                                    @if (@$voting->use_lucky_star)
-                                                                        <img src="/star.png" style="max-width:30px;" alt="">
-                                                                    @endif
-                                                                </td>
-                                                            </tr>
+                                                                <tr style="background:#0e86bb;">
+                                                                    <td><b>#{{ @$key+1 }}</b></td>
+                                                                    <td>{{ @$player->name }}</td>
+                                                                    <td>{{ @$game->get_strong_team()->first()->name }}</td>
+                                                                    <td>{{ @$game->get_weak_team()->first()->name }}</td>
+                                                                    <td>{{ @$game->deviant }}</td>
+                                                                    <td>{{ @$game->over_under }}</td>
+                                                                    <td>
+                                                                        @if (@$voting->vote_value == "strong")
+                                                                            Cửa trên
+                                                                        @elseif (@$voting->vote_value == "weak")
+                                                                            Cửa dưới
+                                                                        @elseif (@$voting->vote_value == "over")
+                                                                            Tài
+                                                                        @elseif (@$voting->vote_value == "under")
+                                                                            Xỉu
+                                                                        @endif
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (@$voting->use_lucky_star)
+                                                                            <img src="/star.png" style="max-width:30px;" alt="">
+                                                                        @endif
+                                                                    </td>
+                                                                </tr>
+                                                            @else
+                                                                <tr style="background:#0e86bb;">
+                                                                    <td><b>#{{ @$key+1 }}</b></td>
+                                                                    <td>{{ @$player->name }}</td>
+                                                                    <td>{{ @$game->get_strong_team()->first()->name }}</td>
+                                                                    <td>{{ @$game->get_weak_team()->first()->name }}</td>
+                                                                    <td>{{ @$game->deviant }}</td>
+                                                                    <td>{{ @$game->over_under }}</td>
+                                                                    <td>
+                                                                        ********
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (@$voting->use_lucky_star)
+                                                                            <img src="/star.png" style="max-width:30px;" alt="">
+                                                                        @endif
+                                                                    </td>
+                                                                </tr>
                                                             @endif
                                                         @endif
                                                     @endforeach
@@ -1349,7 +1371,7 @@
                             
                             <div class="tab-pane fade" id="vote-winner" role="tabpanel" aria-labelledby="vote-winner-tab">
                                 <div class="row">
-                                    @if ( strtotime("03-12-2022 21:30:00") > time() && $current_player)
+                                    @if ( strtotime("29-06-2024 22:30:00") > time() && $current_player)
                                     <div class="col-xl-6 col-lg-6">
                                         
                                         <div class="form-area" style="background: #322a71;padding: 30px;border-radius: 10px;">
@@ -1357,7 +1379,7 @@
                                                 @csrf
                                                 <div class="row">
                                                     <div class="col-12">
-                                                        <p style="font-size:12px;">Bình chọn sẽ được đóng vào 21h30 03/12/2022</p>
+                                                        <p style="font-size:12px;">Bình chọn sẽ được đóng vào 22h30 29/06/2024</p>
                                                         {{-- <div class="single-input">
                                                             <label for="startMatch">Match Start</label>
                                                             <input required="required" class="dateSelect" data-date-format="m/d/Y G:iK" data-enable-time="true" name="game_start" id="startMatch" placeholder="Thời gian bắt đầu">
@@ -1367,9 +1389,9 @@
                                                             <select required="required" name="team_1st" style="max-height:100px;overflow:scroll;">
                                                                 @foreach($teams_available as $team)
                                                                     @if (@$current_player && $current_player->get_team_1st() && $current_player->get_team_1st()->id == $team->id)
-                                                                    <option selected value="{{ $team->id }}">{{ $team->name }}</option>
+                                                                        <option selected value="{{ $team->id }}">{{ $team->name }}</option>
                                                                     @else
-                                                                    <option value="{{ $team->id }}">{{ $team->name }}</option>
+                                                                        <option value="{{ $team->id }}">{{ $team->name }}</option>
                                                                     @endif
                                                                 @endforeach
                                                             </select>
@@ -1380,9 +1402,9 @@
                                                             <select required="required" name="team_2nd" style="max-height:100px;overflow:scroll;">
                                                                 @foreach($teams_available as $team)
                                                                     @if (@$current_player && $current_player->get_team_2nd() && $current_player->get_team_2nd()->id == $team->id)
-                                                                    <option selected value="{{ $team->id }}">{{ $team->name }}</option>
+                                                                        <option selected value="{{ $team->id }}">{{ $team->name }}</option>
                                                                     @else
-                                                                    <option value="{{ $team->id }}">{{ $team->name }}</option>
+                                                                        <option value="{{ $team->id }}">{{ $team->name }}</option>
                                                                     @endif
                                                                 @endforeach
                                                             </select>
@@ -1423,16 +1445,21 @@
                                                                 $counter++;
                                                             @endphp
                                                             @if ($team_1st && $team_2nd && $team_1st->is_out)
-                                                                <tr style="background:#877ac5;">
+                                                                <tr style="background:#ec2255;">
                                                             @elseif ($team_1st && $team_2nd && (!$team_1st->is_out && $team_2nd->is_out) ))
-                                                                <tr style="background:#432f9f;">
+                                                                <tr style="background:#6e5fd7;">
                                                             @else
-                                                                <tr style="background:#322a71;">
+                                                                <tr style="background:#332881;">
                                                             @endif
                                                                     <td>{{@$counter}}</td>
                                                                     <td>{{ @$player->name }}</td>
-                                                                    <td>{{ @$team_1st->name }}</td>
-                                                                    <td>{{ @$team_2nd->name }}</td>
+                                                                    @if ( strtotime("29-06-2024 22:30:00") > time() && $current_player)
+                                                                        <td>********</td>
+                                                                        <td>********</td>
+                                                                    @else
+                                                                        <td>{{ @$team_1st->name }}</td>
+                                                                        <td>{{ @$team_2nd->name }}</td>
+                                                                    @endif
                                                                 </tr>
                                                         @endforeach
 
@@ -1465,7 +1492,7 @@
                     <div class="col-xl-12">
                         <div class="menu-item">
                             <a href="/" class="logo">
-                                <img src="//seeklogo.com/images/F/fifa-world-cup-qatar-2022-logo-32157477CB-seeklogo.com.png" alt="logo">
+                                <img width="145px" src="https://upload.wikimedia.org/wikipedia/en/thumb/2/26/UEFA_Euro_2024_Logo.svg/1200px-UEFA_Euro_2024_Logo.svg.png" alt="logo">
                             </a>
                             {{-- <ul class="footer-link">
                                 <li><a href="contact.html">Contact</a></li>
@@ -1518,10 +1545,10 @@
 
                 // counter Up
                 if (document.querySelector('.counter') !== null) {
-                $('.counter').counterUp({
-                    delay: 10,
-                    time: 2000
-                });
+                    $('.counter').counterUp({
+                        delay: 10,
+                        time: 2000
+                    });
                 }
 
                 // features-carousel

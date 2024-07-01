@@ -20,6 +20,10 @@ use App\Http\Controllers\TeamManager as TeamManager;
 |
 */
 
+// Cron
+Route::get('/cron-update-game', [GameManager::class, 'cron_update_game']);
+
+
 Route::get('/init', [Home::class, 'init']);
 Route::match(['get', 'post'], '/', [Home::class, 'index']);
 Route::get('/game/{id}', [Home::class, 'game'])->whereNumber('id');

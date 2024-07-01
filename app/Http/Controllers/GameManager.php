@@ -105,6 +105,8 @@ class GameManager extends Controller
                                     $current_player->lucky_stars -= 1;
                                     $current_player->save();
                                     $voted->use_lucky_star = true;
+                                } else if ($voted->use_lucky_star) {
+                                    $voted->use_lucky_star = true;
                                 } else {
                                     $voted->use_lucky_star = false;
                                 }
@@ -169,7 +171,7 @@ class GameManager extends Controller
                         $out_team = $game->get_strong_team()->first();
                     }
 
-                    if ($out_team) {
+                    if ($out_team && env('KNOCKOUT_ROUND', false)) {
                         $out_team->is_out = true;
                         $out_team->save();
                     }
@@ -212,7 +214,7 @@ class GameManager extends Controller
                                     $history->add_score = 3;
                                     $history->status = "win";
                                 } else {
-                                    $history->add_score = -3;
+                                    $history->add_score = 0;
                                     $history->status = "loss";
                                 }
                             } else {
@@ -229,7 +231,7 @@ class GameManager extends Controller
                                     $history->add_score = 3;
                                     $history->status = "win";
                                 } else {
-                                    $history->add_score = -3;
+                                    $history->add_score = 0;
                                     $history->status = "loss";
                                 }
                             }
@@ -241,6 +243,9 @@ class GameManager extends Controller
 
                         if ($history->use_lucky_star) {
                             $history->add_score *= 2;
+                            if ($history->add_score == 0) {
+                                $history->add_score = -3; // Dùng ngôi sao đoán sai sẽ bị trừ 3
+                            }
                         }
                         $player->score = $player->score + $history->add_score;
                         $player->save();
@@ -318,6 +323,21 @@ class GameManager extends Controller
             }
         }
         return redirect("/");
+    }
+
+    public function cron_update_game(Request $request) {
+
+        $now = date("Y-m-d H:i:s", time());
+        $next_10minutes = date("Y-m-d H:i:s", time() + 10*60);
+        $games = Game::where("disabled", false)->where("game_done", false)->where("start", "<=", $next_10minutes)->get();
+
+        if ($games && !empty($games)) {
+            foreach($games as $game) {
+                $game->disabled = true;
+                $game->save();
+            }
+        }
+
     }
 
 }
